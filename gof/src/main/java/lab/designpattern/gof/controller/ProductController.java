@@ -1,5 +1,7 @@
 package lab.designpattern.gof.controller;
 
+import jakarta.validation.Valid;
+import lab.designpattern.gof.dto.ProductDTO;
 import lab.designpattern.gof.feign.ExternalProductDTO;
 import lab.designpattern.gof.model.Product;
 
@@ -19,7 +21,7 @@ public class ProductController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Product> getAll() {
         return service.listAll();
     }
@@ -42,9 +44,15 @@ public class ProductController {
     }
 
 
+    @PutMapping("/{id}")
+    public Product update (@PathVariable Long id, @Valid @RequestBody Product p){
+        return service.update(id,p);
+    }
+
+
     @PostMapping
-    public Product create(@RequestBody Product p) {
-        System.out.println("Recebi -> name: " + p.getName() + ", price: " + p.getPrice()); //Teste pra ver se recebeu mesmo
-        return service.save(p);
+    public Product create(@Valid @RequestBody ProductDTO dto) {
+        System.out.println("Recebi -> name: " + dto.getName() + ", price: " + dto.getPrice()); //Teste pra ver se recebeu mesmo
+        return service.save(dto);
     }
 }

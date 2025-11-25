@@ -1,5 +1,6 @@
 package lab.designpattern.gof.service;
 
+import lab.designpattern.gof.dto.ProductDTO;
 import lab.designpattern.gof.feign.ExternalProductClient;
 import lab.designpattern.gof.feign.ExternalProductDTO;
 import lab.designpattern.gof.model.Product;
@@ -23,7 +24,10 @@ public class ProductService {
         return repository.findAll();
     }
 
-    public Product save(Product p) {
+    public Product save(ProductDTO dto) {
+        Product p = new Product();
+        p.setName(dto.getName());
+        p.setPrice(dto.getPrice());
         return repository.save(p);
     }
 
@@ -45,4 +49,11 @@ public class ProductService {
     }
 
 
+    public Product update(Long id, Product newData) {
+        return repository.findById(id).map(existing -> {existing.setName(newData.getName());
+        existing.setPrice(newData.getPrice());
+        return repository.save(existing);
+        })
+                .orElseThrow(() -> new RuntimeException("Produto nao encontrado"));
+    }
 }
